@@ -1,0 +1,12 @@
+{
+  "name": "ms-holder-account",
+  "version": "1.0.0",
+  "description": "Service reponsible for holder account domain. Z-Tech code challenge.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Bruno Barreira - 2022",
+  "license": "ISC"
+}
