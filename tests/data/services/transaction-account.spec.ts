@@ -1,5 +1,6 @@
 import { LoadTransactionAccoutRepository, CreateTransactionAccoutRepository } from '@/data/contracts/repos'
 import { TransactionAccountService } from '@/data/services'
+import { InternalServerError } from '@/domain/models/errors'
 
 import { mock, MockProxy } from 'jest-mock-extended'
 
@@ -43,5 +44,13 @@ describe('TransactionAccountService', () => {
 
     expect(createTransactionAccountRepo.create).toHaveBeenCalledWith(fakeInpuCreateTransactionAccount)
     expect(createTransactionAccountRepo.create).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return Internal Server Error if LoadTransactionAccoutRepo fails', async () => {
+    loadTAByVatNumber.load.mockResolvedValueOnce(new InternalServerError())
+
+    const loadTransactionAccount = await sut.perform(fakeInpuCreateTransactionAccount)
+
+    expect(loadTransactionAccount).toEqual(new InternalServerError())
   })
 })
