@@ -1,27 +1,6 @@
-import { TransactionAccount } from '@/domain/features'
+import { LoadTransactionAccout } from '@/data/contracts/apis'
+import { TransactionAccountService } from '@/data/services'
 import { NotFoundError } from '@/domain/models/errors'
-
-class TransactionAccountService {
-  constructor (
-    private readonly loadTA: LoadTransactionAccout
-  ) {}
-
-  async perform (input: TransactionAccount.Input): Promise<NotFoundError> {
-    await this.loadTA.loadTransactionAccount(input)
-    return new NotFoundError()
-  }
-}
-
-interface LoadTransactionAccout {
-  loadTransactionAccount: (input: LoadTransactionAccout.Input) => Promise<LoadTransactionAccout.Output>
-}
-
-namespace LoadTransactionAccout {
-  export type Input = {
-    vatNumber: string
-  }
-  export type Output = null
-}
 
 class LoadTransactionAccoutSpy implements LoadTransactionAccout {
   id?: string
