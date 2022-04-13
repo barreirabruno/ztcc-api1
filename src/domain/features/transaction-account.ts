@@ -1,5 +1,4 @@
 import { TransactionAccountModel } from '../models'
-import { NotFoundError } from '../models/errors'
 
 export interface TransactionAccountInterface {
   perform: (params: TransactionAccount.Input) => Promise<TransactionAccount.Output>
@@ -7,7 +6,9 @@ export interface TransactionAccountInterface {
 
 export namespace TransactionAccount {
   export type Input = {
+    first_name: string
+    last_name: string
     vatNumber: string
   }
-  export type Output = TransactionAccountModel | NotFoundError
+  export type Output = TransactionAccountModel
 }
