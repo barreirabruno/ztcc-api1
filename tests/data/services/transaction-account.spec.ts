@@ -4,10 +4,12 @@ import { NotFoundError } from '@/domain/models/errors'
 
 class LoadTransactionAccoutSpy implements LoadTransactionAccout {
   id?: string
+  callsCount = 0
   result = null
 
   async loadTransactionAccount (input: LoadTransactionAccout.Input): Promise<LoadTransactionAccout.Output> {
     this.id = 'any_transaction_account_id'
+    this.callsCount++
     return this.result
   }
 }
@@ -24,6 +26,7 @@ describe('TransactionAccountService', () => {
     await sut.perform(fakeParams)
 
     expect(loadTAByVatNumber.id).toBe('any_transaction_account_id')
+    expect(loadTAByVatNumber.callsCount).toBe(1)
   })
 
   it('should return NotFoundError if LoadTransactionAccout returns null', async () => {
