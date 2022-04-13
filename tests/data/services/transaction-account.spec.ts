@@ -1,15 +1,30 @@
+import { LoadTransactionAccout } from '@/data/contracts/apis'
 import { TransactionAccountService } from '@/data/services'
 import { NotFoundError } from '@/domain/models/errors'
 
+import { mock, MockProxy } from 'jest-mock-extended'
+
+type SutTypes = {
+  sut: TransactionAccountService
+  loadTAByVatNumber: MockProxy<LoadTransactionAccout>
+}
+
+const makeSut = (): SutTypes => {
+  const loadTAByVatNumber = mock<LoadTransactionAccout>()
+  const sut = new TransactionAccountService(loadTAByVatNumber)
+  return {
+    sut,
+    loadTAByVatNumber
+  }
+}
+
+const fakeParams = {
+  vatNumber: 'any_vatNumber'
+}
+
 describe('TransactionAccountService', () => {
   it('should call LoadTransactionAccout with correct params', async () => {
-    const fakeParams = {
-      vatNumber: 'any_vatNumber'
-    }
-
-    const loadTAByVatNumber = { loadTransactionAccount: jest.fn() }
-    const sut = new TransactionAccountService(loadTAByVatNumber)
-
+    const { sut, loadTAByVatNumber } = makeSut()
     await sut.perform(fakeParams)
 
     expect(loadTAByVatNumber.loadTransactionAccount).toHaveBeenCalledWith(fakeParams)
@@ -17,15 +32,8 @@ describe('TransactionAccountService', () => {
   })
 
   it('should return NotFoundError if LoadTransactionAccout returns null', async () => {
-    const fakeParams = {
-      vatNumber: 'any_vatNumber'
-    }
-
-    const loadTAByVatNumber = {
-      loadTransactionAccount: jest.fn()
-    }
-    loadTAByVatNumber.loadTransactionAccount.mockReturnValueOnce(null)
-    const sut = new TransactionAccountService(loadTAByVatNumber)
+    const { sut, loadTAByVatNumber } = makeSut()
+    loadTAByVatNumber.loadTransactionAccount.mockResolvedValueOnce(null)
 
     const loadTransactionAccount = await sut.perform(fakeParams)
 
