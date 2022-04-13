@@ -53,4 +53,13 @@ describe('TransactionAccountService', () => {
 
     expect(loadTransactionAccount).toEqual(new InternalServerError())
   })
+
+  it('should return Internal Server Error if CreateTransactionAccountRepo fails', async () => {
+    loadTAByVatNumber.load.mockResolvedValueOnce(null)
+    createTransactionAccountRepo.create.mockResolvedValueOnce(new InternalServerError())
+
+    const loadTransactionAccount = await sut.perform(fakeInpuCreateTransactionAccount)
+
+    expect(loadTransactionAccount).toEqual(new InternalServerError())
+  })
 })
