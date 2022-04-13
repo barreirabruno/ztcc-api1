@@ -1,34 +1,38 @@
-import { LoadTransactionAccout } from '@/data/contracts/apis'
+import { LoadTransactionAccoutRepository, CreateTransactionAccoutRepository } from '@/data/contracts/repos'
 import { TransactionAccountService } from '@/data/services'
-import { NotFoundError } from '@/domain/models/errors'
 
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('TransactionAccountService', () => {
-  let loadTAByVatNumber: MockProxy<LoadTransactionAccout>
+  let loadTAByVatNumber: MockProxy<LoadTransactionAccoutRepository>
+  let createTransactionAccountRepo: MockProxy<CreateTransactionAccoutRepository>
   let sut: TransactionAccountService
 
-  const fakeParams = {
+  const fakeInpuCreateTransactionAccount = {
+    first_name: 'any_firstname',
+    last_name: 'any_lastname',
     vatNumber: 'any_vatNumber'
   }
 
   beforeEach(() => {
     loadTAByVatNumber = mock()
-    sut = new TransactionAccountService(loadTAByVatNumber)
+    loadTAByVatNumber.load.mockResolvedValue({
+      id: 'any_database_id',
+      first_name: 'any_firstname',
+      last_name: 'any_lastname',
+      vatNumber: 'any_vatNumber'
+    })
+    createTransactionAccountRepo = mock()
+    sut = new TransactionAccountService(
+      loadTAByVatNumber,
+      createTransactionAccountRepo
+    )
   })
 
-  it('should call LoadTransactionAccout with correct params', async () => {
-    await sut.perform(fakeParams)
+  it('should call LoadTransactionAccoutRepo with correct params', async () => {
+    await sut.perform(fakeInpuCreateTransactionAccount)
 
-    expect(loadTAByVatNumber.loadTransactionAccount).toHaveBeenCalledWith(fakeParams)
-    expect(loadTAByVatNumber.loadTransactionAccount).toHaveBeenCalledTimes(1)
-  })
-
-  it('should return NotFoundError if LoadTransactionAccout returns null', async () => {
-    loadTAByVatNumber.loadTransactionAccount.mockResolvedValueOnce(null)
-
-    const loadTransactionAccount = await sut.perform(fakeParams)
-
-    expect(loadTransactionAccount).toEqual(new NotFoundError())
+    expect(loadTAByVatNumber.load).toHaveBeenCalledWith({ vatNumber: fakeInpuCreateTransactionAccount.vatNumber })
+    expect(loadTAByVatNumber.load).toHaveBeenCalledTimes(1)
   })
 })
