@@ -35,4 +35,13 @@ describe('TransactionAccountService', () => {
     expect(loadTAByVatNumber.load).toHaveBeenCalledWith({ vatNumber: fakeInpuCreateTransactionAccount.vatNumber })
     expect(loadTAByVatNumber.load).toHaveBeenCalledTimes(1)
   })
+
+  it('should call CreateTransactionAccountRepo when LoadTransactionAccout returns null', async () => {
+    loadTAByVatNumber.load.mockResolvedValueOnce(null)
+
+    await sut.perform(fakeInpuCreateTransactionAccount)
+
+    expect(createTransactionAccountRepo.create).toHaveBeenCalledWith(fakeInpuCreateTransactionAccount)
+    expect(createTransactionAccountRepo.create).toHaveBeenCalledTimes(1)
+  })
 })
