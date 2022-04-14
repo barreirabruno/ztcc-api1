@@ -1,20 +1,21 @@
 import { TransactionAccount } from '@/domain/features'
-import { TransactionAccountModel } from '@/domain/models'
 import { InternalServerError } from '@/domain/models/errors'
-import { CreateTransactionAccoutRepository, LoadTransactionAccoutRepository } from '../contracts/repos'
+import { CreateTransactionAccoutRepository, LoadTransactionAccoutRepository, UpdateTransactionAccoutRepository } from '../contracts/repos'
 
 export class TransactionAccountService {
   constructor (
-    private readonly userAccountRepo: LoadTransactionAccoutRepository & CreateTransactionAccoutRepository
+    private readonly userAccountRepo: LoadTransactionAccoutRepository &
+    CreateTransactionAccoutRepository &
+    UpdateTransactionAccoutRepository
   ) {}
 
-  async perform (input: TransactionAccount.Input): Promise<null | InternalServerError |TransactionAccountModel> {
+  async perform (input: TransactionAccount.Input): Promise<InternalServerError> {
     const searchTransactionAccount = await this.userAccountRepo.load({ vatNumber: input.vatNumber })
     if (searchTransactionAccount !== null) {
-      return searchTransactionAccount
+      await this.userAccountRepo.update(input)
     } else {
-      const createTransactionAccount = await this.userAccountRepo.create(input)
-      return createTransactionAccount
+      await this.userAccountRepo.create(input)
     }
+    return new InternalServerError()
   }
 }
