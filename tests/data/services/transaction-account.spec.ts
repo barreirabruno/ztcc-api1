@@ -5,8 +5,7 @@ import { InternalServerError } from '@/domain/models/errors'
 import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('TransactionAccountService', () => {
-  let loadTAByVatNumber: MockProxy<LoadTransactionAccoutRepository>
-  let createTransactionAccountRepo: MockProxy<CreateTransactionAccoutRepository>
+  let userAccountRepo: MockProxy<LoadTransactionAccoutRepository & CreateTransactionAccoutRepository>
   let sut: TransactionAccountService
 
   const fakeInpuCreateTransactionAccount = {
@@ -16,38 +15,36 @@ describe('TransactionAccountService', () => {
   }
 
   beforeEach(() => {
-    loadTAByVatNumber = mock()
-    loadTAByVatNumber.load.mockResolvedValue({
+    userAccountRepo = mock()
+    userAccountRepo.load.mockResolvedValue({
       id: 'any_database_id',
       first_name: 'any_firstname',
       last_name: 'any_lastname',
       vatNumber: 'any_vatNumber'
     })
-    createTransactionAccountRepo = mock()
     sut = new TransactionAccountService(
-      loadTAByVatNumber,
-      createTransactionAccountRepo
+      userAccountRepo
     )
   })
 
   it('should call LoadTransactionAccoutRepo with correct params', async () => {
     await sut.perform(fakeInpuCreateTransactionAccount)
 
-    expect(loadTAByVatNumber.load).toHaveBeenCalledWith({ vatNumber: fakeInpuCreateTransactionAccount.vatNumber })
-    expect(loadTAByVatNumber.load).toHaveBeenCalledTimes(1)
+    expect(userAccountRepo.load).toHaveBeenCalledWith({ vatNumber: fakeInpuCreateTransactionAccount.vatNumber })
+    expect(userAccountRepo.load).toHaveBeenCalledTimes(1)
   })
 
   it('should call CreateTransactionAccountRepo when LoadTransactionAccout returns null', async () => {
-    loadTAByVatNumber.load.mockResolvedValueOnce(null)
+    userAccountRepo.load.mockResolvedValueOnce(null)
 
     await sut.perform(fakeInpuCreateTransactionAccount)
 
-    expect(createTransactionAccountRepo.create).toHaveBeenCalledWith(fakeInpuCreateTransactionAccount)
-    expect(createTransactionAccountRepo.create).toHaveBeenCalledTimes(1)
+    expect(userAccountRepo.create).toHaveBeenCalledWith(fakeInpuCreateTransactionAccount)
+    expect(userAccountRepo.create).toHaveBeenCalledTimes(1)
   })
 
   it('should return Internal Server Error if LoadTransactionAccoutRepo fails', async () => {
-    loadTAByVatNumber.load.mockResolvedValueOnce(new InternalServerError())
+    userAccountRepo.load.mockResolvedValueOnce(new InternalServerError())
 
     const loadTransactionAccount = await sut.perform(fakeInpuCreateTransactionAccount)
 
@@ -55,8 +52,8 @@ describe('TransactionAccountService', () => {
   })
 
   it('should return Internal Server Error if CreateTransactionAccountRepo fails', async () => {
-    loadTAByVatNumber.load.mockResolvedValueOnce(null)
-    createTransactionAccountRepo.create.mockResolvedValueOnce(new InternalServerError())
+    userAccountRepo.load.mockResolvedValueOnce(null)
+    userAccountRepo.create.mockResolvedValueOnce(new InternalServerError())
 
     const loadTransactionAccount = await sut.perform(fakeInpuCreateTransactionAccount)
 
