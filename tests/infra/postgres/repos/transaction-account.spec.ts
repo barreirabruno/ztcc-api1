@@ -1,12 +1,12 @@
 import { LoadTransactionAccout } from '@/data/contracts/repos'
 
-import { newDb } from 'pg-mem'
-import { Entity, PrimaryGeneratedColumn, Column, getRepository } from 'typeorm'
+import { IBackup, newDb } from 'pg-mem'
+import { Entity, PrimaryGeneratedColumn, Column, getRepository, Repository, getConnection } from 'typeorm'
 
-class PgAccountRepository {
+class PgTransactionAccountRepository {
   async load (params: LoadTransactionAccout.Input): Promise<LoadTransactionAccout.Output> {
     const pgTransactionAccountRepo = getRepository(PgTransactionAccount)
-    const pgTA = await pgTransactionAccountRepo.findOne({ vatNumber: 'xxxxxxxxxxx' })
+    const pgTA = await pgTransactionAccountRepo.findOne({ vatNumber: params.vatNumber })
     if (pgTA !== undefined) {
       return {
         id: pgTA.id.toString(),
@@ -34,41 +34,41 @@ class PgTransactionAccount {
 }
 
 describe('PgTransactionAccountRepository', () => {
+  let sut: PgTransactionAccountRepository
+  let pgTransactionAccountRepo: Repository<PgTransactionAccount>
+  let backup: IBackup
+
+  beforeAll(async () => {
+    const db = newDb()
+    const connection = await db.adapters.createTypeormConnection({
+      type: 'postgres',
+      entities: [PgTransactionAccount]
+    })
+    await connection.synchronize()
+    backup = db.backup()
+    pgTransactionAccountRepo = getRepository(PgTransactionAccount)
+  })
+
+  afterAll(async () => {
+    backup.restore()
+    await getConnection().close()
+  })
+
+  beforeEach(() => {
+    sut = new PgTransactionAccountRepository()
+  })
   describe('load', () => {
     it('should return an account if vatNumber exists', async () => {
-      const db = newDb()
-      const connection = await db.adapters.createTypeormConnection({
-        type: 'postgres',
-        entities: [PgTransactionAccount]
-      })
-      await connection.synchronize()
-      const pgTransactionAccountRepo = getRepository(PgTransactionAccount)
-      await pgTransactionAccountRepo.save({
-        vatNumber: 'xxxxxxxxxxx'
-      })
+      await pgTransactionAccountRepo.save({ vatNumber: 'xxxxxxxxxxx' })
+      const transactionAccountA = await sut.load({ vatNumber: 'xxxxxxxxxxx' })
 
-      const sut = new PgAccountRepository()
-
-      const transactionAccount = await sut.load({ vatNumber: 'xxxxxxxxxxx' })
-
-      expect(transactionAccount).toEqual({
+      expect(transactionAccountA).toEqual({
         id: '1',
         vatNumber: 'xxxxxxxxxxx'
       })
-
-      await connection.close()
     })
 
     it('should return undefined if vatNumber not exists', async () => {
-      const db = newDb()
-      const connection = await db.adapters.createTypeormConnection({
-        type: 'postgres',
-        entities: [PgTransactionAccount]
-      })
-      await connection.synchronize()
-
-      const sut = new PgAccountRepository()
-
       const transactionAccount = await sut.load({ vatNumber: '00000000000' })
 
       expect(transactionAccount).toBeUndefined()
