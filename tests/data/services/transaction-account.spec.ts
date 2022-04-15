@@ -58,9 +58,18 @@ describe('TransactionAccountService', () => {
   })
 
   it('should call UpdateTransactionAccountRepo when LoadTransactionAccout returns data', async () => {
+    userAccountRepo.load.mockResolvedValueOnce({
+      id: 'any_id_cannot_be_changed',
+      first_name: 'any_firstname_old',
+      last_name: 'any_lastname_old',
+      vatNumber: 'any_vatNumber_cannot_be_changed'
+    })
     await sut.perform(fakeInpuUpdateTransactionAccount)
 
-    expect(userAccountRepo.update).toHaveBeenCalledWith(fakeInpuUpdateTransactionAccount)
+    expect(userAccountRepo.update).toHaveBeenCalledWith({
+      first_name: fakeInpuUpdateTransactionAccount.first_name,
+      last_name: fakeInpuUpdateTransactionAccount.last_name
+    })
     expect(userAccountRepo.update).toHaveBeenCalledTimes(1)
   })
 })
