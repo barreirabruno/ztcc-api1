@@ -1,18 +1,16 @@
-import { TransactionAccount } from '@/domain/features'
+import { TransactionAccount, TransactionAccountInterface } from '@/domain/features'
 import { TransactionAccountModel } from '@/domain/models'
-import { InternalServerError } from '@/domain/models/errors'
 import { SaveTransactionAccoutRepository, LoadTransactionAccoutRepository } from '../contracts/repos'
 
-export class TransactionAccountService {
+export class TransactionAccountService implements TransactionAccountInterface {
   constructor (
     private readonly userAccountRepo: LoadTransactionAccoutRepository &
     SaveTransactionAccoutRepository
   ) {}
 
-  async perform (input: TransactionAccount.Input): Promise<InternalServerError> {
+  async perform (input: TransactionAccount.Input): Promise<TransactionAccount.Output> {
     const searchTransactionAccount = await this.userAccountRepo.load({ vatNumber: input.vatNumber })
     const transactionAccountEntity = new TransactionAccountModel(input, searchTransactionAccount)
-    await this.userAccountRepo.save(transactionAccountEntity)
-    return new InternalServerError()
+    return await this.userAccountRepo.save(transactionAccountEntity)
   }
 }
