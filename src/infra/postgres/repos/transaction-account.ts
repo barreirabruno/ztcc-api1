@@ -1,8 +1,8 @@
-import { LoadTransactionAccout } from '@/data/contracts/repos'
+import { LoadTransactionAccout, LoadTransactionAccoutRepository } from '@/data/contracts/repos'
 import { getRepository } from 'typeorm'
 import { PgTransactionAccount } from '../entities'
 
-export class PgTransactionAccountRepository {
+export class PgTransactionAccountRepository implements LoadTransactionAccoutRepository {
   async load (params: LoadTransactionAccout.Input): Promise<LoadTransactionAccout.Output> {
     const pgTransactionAccountRepo = getRepository(PgTransactionAccount)
     const pgTA = await pgTransactionAccountRepo.findOne({ vatNumber: params.vatNumber })
