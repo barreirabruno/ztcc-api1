@@ -17,13 +17,14 @@ describe('PgTransactionAccountRepository', () => {
   })
 
   afterAll(async () => {
-    backup.restore()
     await getConnection().close()
   })
 
   beforeEach(() => {
+    backup.restore()
     sut = new PgTransactionAccountRepository()
   })
+
   describe('load', () => {
     it('should return an account if vatNumber exists', async () => {
       await pgTransactionAccountRepo.save({ vatNumber: 'xxxxxxxxxxx' })
@@ -39,6 +40,19 @@ describe('PgTransactionAccountRepository', () => {
       const transactionAccount = await sut.load({ vatNumber: '00000000000' })
 
       expect(transactionAccount).toBeUndefined()
+    })
+  })
+
+  describe('save', () => {
+    it('should create an account if id is undefined', async () => {
+      await sut.save({
+        first_name: 'any_first_name_test',
+        last_name: 'any_last_name_test',
+        vatNumber: '00000000001'
+      })
+      const findTransactionAccount = await pgTransactionAccountRepo.findOne({ vatNumber: '00000000001' })
+
+      expect(findTransactionAccount?.id).toBe(1)
     })
   })
 })
