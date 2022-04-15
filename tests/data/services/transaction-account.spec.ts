@@ -16,11 +16,11 @@ describe('TransactionAccountService', () => {
     vatNumber: 'any_vatNumber'
   }
 
-  const fakeInpuUpdateTransactionAccount = {
-    id: 'any_valid_id',
-    first_name: 'any_firstname_update',
-    last_name: 'any_lastname_update',
-    vatNumber: 'any_vatNumber'
+  const storedTransactionAccount = {
+    id: 'any_database_id',
+    first_name: 'any_firstname',
+    last_name: 'any_lastname',
+    vatNumber: 'any_database_vatNumber'
   }
 
   beforeEach(() => {
@@ -29,7 +29,7 @@ describe('TransactionAccountService', () => {
       id: 'any_database_id',
       first_name: 'any_firstname',
       last_name: 'any_lastname',
-      vatNumber: 'any_vatNumber'
+      vatNumber: 'any_database_vatNumber'
     })
     sut = new TransactionAccountService(
       userAccountRepo
@@ -59,15 +59,13 @@ describe('TransactionAccountService', () => {
   })
 
   it('should call UpdateTransactionAccountRepo when LoadTransactionAccout returns data', async () => {
-    userAccountRepo.load.mockResolvedValueOnce({
-      id: 'any_valid_id',
-      first_name: 'any_firstname_old',
-      last_name: 'any_lastname_old',
-      vatNumber: 'any_vatNumber_cannot_be_changed'
+    await sut.perform({
+      first_name: 'any_firstname',
+      last_name: 'any_lastname',
+      vatNumber: 'any_vatNumber'
     })
-    await sut.perform(fakeInpuUpdateTransactionAccount)
 
-    expect(userAccountRepo.save).toHaveBeenCalledWith(fakeInpuUpdateTransactionAccount)
+    expect(userAccountRepo.save).toHaveBeenCalledWith(storedTransactionAccount)
     expect(userAccountRepo.save).toHaveBeenCalledTimes(1)
   })
 })
