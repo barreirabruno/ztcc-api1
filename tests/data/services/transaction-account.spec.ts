@@ -76,4 +76,12 @@ describe('TransactionAccountService', () => {
 
     await expect(promise).rejects.toThrow(new Error('any_LoadTransactionAccoutRepository_ERROR'))
   })
+
+  it('should rethrow if SaveTransactionAccoutRepository throw an error', async () => {
+    userAccountRepo.save.mockRejectedValueOnce(new Error('any_SaveTransactionAccoutRepository_ERROR'))
+
+    const promise = sut.perform(fakeInpuCreateTransactionAccount)
+
+    await expect(promise).rejects.toThrow(new Error('any_SaveTransactionAccoutRepository_ERROR'))
+  })
 })
