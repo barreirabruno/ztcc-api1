@@ -55,6 +55,23 @@ describe('PgTransactionAccountRepository', () => {
         id: '1',
         vatNumber: 'xxxxxxxxxxx'
       })
+
+      await connection.close()
+    })
+
+    it('should return undefined if vatNumber not exists', async () => {
+      const db = newDb()
+      const connection = await db.adapters.createTypeormConnection({
+        type: 'postgres',
+        entities: [PgTransactionAccount]
+      })
+      await connection.synchronize()
+
+      const sut = new PgAccountRepository()
+
+      const transactionAccount = await sut.load({ vatNumber: '00000000000' })
+
+      expect(transactionAccount).toBeUndefined()
     })
   })
 })
