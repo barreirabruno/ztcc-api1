@@ -6,7 +6,7 @@ export interface TransactionAccountInterface {
 
 export namespace TransactionAccount {
   export type Input = {
-    id: string
+    id?: string
     first_name: string
     last_name: string
     vatNumber: string
