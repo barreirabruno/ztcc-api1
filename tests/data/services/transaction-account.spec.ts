@@ -58,7 +58,7 @@ describe('TransactionAccountService', () => {
     expect(loadTransactionAccount).toEqual(new InternalServerError())
   })
 
-  it('should call UpdateTransactionAccountRepo when LoadTransactionAccout returns data', async () => {
+  it('should call SaveTransactionAccoutRepository when LoadTransactionAccout returns data', async () => {
     await sut.perform({
       first_name: 'any_firstname',
       last_name: 'any_lastname',
