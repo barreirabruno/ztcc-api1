@@ -27,10 +27,10 @@ export namespace SaveTransactionAccoutRepository {
     last_name?: string
     vatNumber: string
   }
-  export type Output = null | InternalServerError | {
+  export type Output = {
     id: string
     first_name: string
     last_name: string
     vatNumber: string
-  }
+  } | InternalServerError
 }
