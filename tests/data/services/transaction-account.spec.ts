@@ -23,7 +23,7 @@ describe('TransactionAccountService', () => {
     vatNumber: 'any_database_vatNumber'
   }
 
-  beforeEach(() => {
+  beforeAll(() => {
     userAccountRepo = mock()
     userAccountRepo.load.mockResolvedValue({
       id: 'any_database_id',
@@ -31,6 +31,10 @@ describe('TransactionAccountService', () => {
       last_name: 'any_lastname',
       vatNumber: 'any_database_vatNumber'
     })
+  })
+
+  beforeEach(() => {
+    jest.clearAllMocks()
     sut = new TransactionAccountService(
       userAccountRepo
     )
