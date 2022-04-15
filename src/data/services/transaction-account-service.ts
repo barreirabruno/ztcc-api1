@@ -12,7 +12,12 @@ export class TransactionAccountService {
   async perform (input: TransactionAccount.Input): Promise<InternalServerError> {
     const searchTransactionAccount = await this.userAccountRepo.load({ vatNumber: input.vatNumber })
     if (searchTransactionAccount !== null) {
-      await this.userAccountRepo.update(input)
+      if (searchTransactionAccount?.id !== undefined) {
+        await this.userAccountRepo.update({
+          first_name: input.first_name,
+          last_name: input.last_name
+        })
+      }
     } else {
       await this.userAccountRepo.create(input)
     }
