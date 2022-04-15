@@ -8,8 +8,8 @@ export namespace LoadTransactionAccout {
   export type Input = {
     vatNumber: string
   }
-  export type Output = null | InternalServerError | {
-    id: string
+  export type Output = null | undefined | {
+    id?: string
     first_name: string
     last_name: string
     vatNumber: string
