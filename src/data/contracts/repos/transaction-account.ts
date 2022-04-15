@@ -9,9 +9,9 @@ export namespace LoadTransactionAccout {
     vatNumber: string
   }
   export type Output = null | undefined | {
-    id?: string
-    first_name: string
-    last_name: string
+    id: string
+    first_name?: string
+    last_name?: string
     vatNumber: string
   }
 }
@@ -23,9 +23,9 @@ export interface SaveTransactionAccoutRepository {
 export namespace SaveTransactionAccoutRepository {
   export type Input = {
     id?: string
-    first_name: string
-    last_name: string
-    vatNumber?: string
+    first_name?: string
+    last_name?: string
+    vatNumber: string
   }
   export type Output = null | InternalServerError | {
     id: string
