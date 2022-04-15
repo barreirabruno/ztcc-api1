@@ -10,7 +10,7 @@ type LoadTransactionAccountData = {
   first_name?: string
   last_name?: string
   vatNumber: string
-} | null | undefined
+} | null
 
 export class TransactionAccountModel {
   id?: string
