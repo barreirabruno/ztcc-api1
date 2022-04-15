@@ -54,5 +54,29 @@ describe('PgTransactionAccountRepository', () => {
 
       expect(findTransactionAccount?.id).toBe(1)
     })
+
+    it('should create an account if id defined', async () => {
+      await sut.save({
+        first_name: 'any_first_name_test_A',
+        last_name: 'any_last_name_test_A',
+        vatNumber: '00000000002'
+      })
+
+      await sut.save({
+        id: '1',
+        first_name: 'any_first_name_test_UPDATED',
+        last_name: 'any_last_name_test_UPDATED',
+        vatNumber: '00000000002'
+      })
+
+      const findTransactionAccount = await pgTransactionAccountRepo.findOne({ id: 1 })
+
+      expect(findTransactionAccount).toEqual({
+        id: 1,
+        first_name: 'any_first_name_test_UPDATED',
+        last_name: 'any_last_name_test_UPDATED',
+        vatNumber: '00000000002'
+      })
+    })
   })
 })

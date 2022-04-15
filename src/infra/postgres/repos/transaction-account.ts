@@ -18,10 +18,19 @@ export class PgTransactionAccountRepository implements LoadTransactionAccoutRepo
 
   async save (params: SaveTransactionAccoutRepository.Input): Promise<void> {
     const pgTransactionAccountRepo = getRepository(PgTransactionAccount)
-    await pgTransactionAccountRepo.save({
-      first_name: params.first_name,
-      last_name: params.last_name,
-      vatNumber: params.vatNumber
-    })
+    if (params.id === undefined) {
+      await pgTransactionAccountRepo.save({
+        first_name: params.first_name,
+        last_name: params.last_name,
+        vatNumber: params.vatNumber
+      })
+    } else {
+      await pgTransactionAccountRepo.update({
+        id: parseInt(params.id)
+      }, {
+        first_name: params.first_name,
+        last_name: params.last_name
+      })
+    }
   }
 }
