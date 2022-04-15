@@ -1,4 +1,4 @@
-import { LoadTransactionAccout, LoadTransactionAccoutRepository } from '@/data/contracts/repos'
+import { LoadTransactionAccout, LoadTransactionAccoutRepository, SaveTransactionAccoutRepository } from '@/data/contracts/repos'
 import { getRepository } from 'typeorm'
 import { PgTransactionAccount } from '../entities'
 
@@ -14,5 +14,14 @@ export class PgTransactionAccountRepository implements LoadTransactionAccoutRepo
         vatNumber: pgTA.vatNumber
       }
     }
+  }
+
+  async save (params: SaveTransactionAccoutRepository.Input): Promise<void> {
+    const pgTransactionAccountRepo = getRepository(PgTransactionAccount)
+    await pgTransactionAccountRepo.save({
+      first_name: params.first_name,
+      last_name: params.last_name,
+      vatNumber: params.vatNumber
+    })
   }
 }
