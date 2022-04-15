@@ -1,37 +1,9 @@
-import { LoadTransactionAccout } from '@/data/contracts/repos'
+import { PgTransactionAccount } from '@/infra/postgres/entities'
+import { PgTransactionAccountRepository } from '@/infra/postgres/repos'
+import { makeFakeDb } from '@/tests/infra/postgres/mocks'
 
-import { IBackup, newDb } from 'pg-mem'
-import { Entity, PrimaryGeneratedColumn, Column, getRepository, Repository, getConnection } from 'typeorm'
-
-class PgTransactionAccountRepository {
-  async load (params: LoadTransactionAccout.Input): Promise<LoadTransactionAccout.Output> {
-    const pgTransactionAccountRepo = getRepository(PgTransactionAccount)
-    const pgTA = await pgTransactionAccountRepo.findOne({ vatNumber: params.vatNumber })
-    if (pgTA !== undefined) {
-      return {
-        id: pgTA.id.toString(),
-        first_name: pgTA.first_name ?? undefined,
-        last_name: pgTA.last_name ?? undefined,
-        vatNumber: pgTA.vatNumber
-      }
-    }
-  }
-}
-
-@Entity()
-class PgTransactionAccount {
-  @PrimaryGeneratedColumn()
-  id!: number
-
-  @Column({ nullable: true })
-  first_name!: string
-
-  @Column({ nullable: true })
-  last_name!: string
-
-  @Column()
-  vatNumber!: string
-}
+import { IBackup } from 'pg-mem'
+import { getRepository, Repository, getConnection } from 'typeorm'
 
 describe('PgTransactionAccountRepository', () => {
   let sut: PgTransactionAccountRepository
@@ -39,12 +11,7 @@ describe('PgTransactionAccountRepository', () => {
   let backup: IBackup
 
   beforeAll(async () => {
-    const db = newDb()
-    const connection = await db.adapters.createTypeormConnection({
-      type: 'postgres',
-      entities: [PgTransactionAccount]
-    })
-    await connection.synchronize()
+    const db = await makeFakeDb([PgTransactionAccount])
     backup = db.backup()
     pgTransactionAccountRepo = getRepository(PgTransactionAccount)
   })
