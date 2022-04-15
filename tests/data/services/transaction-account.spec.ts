@@ -1,4 +1,4 @@
-import { LoadTransactionAccoutRepository, CreateTransactionAccoutRepository, UpdateTransactionAccoutRepository } from '@/data/contracts/repos'
+import { LoadTransactionAccoutRepository, SaveTransactionAccoutRepository } from '@/data/contracts/repos'
 import { TransactionAccountService } from '@/data/services'
 import { InternalServerError } from '@/domain/models/errors'
 
@@ -6,17 +6,18 @@ import { mock, MockProxy } from 'jest-mock-extended'
 
 describe('TransactionAccountService', () => {
   let userAccountRepo: MockProxy<LoadTransactionAccoutRepository &
-  CreateTransactionAccoutRepository &
-  UpdateTransactionAccoutRepository>
+  SaveTransactionAccoutRepository>
   let sut: TransactionAccountService
 
   const fakeInpuCreateTransactionAccount = {
+    id: 'any_valid_id',
     first_name: 'any_firstname',
     last_name: 'any_lastname',
     vatNumber: 'any_vatNumber'
   }
 
   const fakeInpuUpdateTransactionAccount = {
+    id: 'any_valid_id',
     first_name: 'any_firstname_update',
     last_name: 'any_lastname_update',
     vatNumber: 'any_vatNumber'
@@ -42,16 +43,16 @@ describe('TransactionAccountService', () => {
     expect(userAccountRepo.load).toHaveBeenCalledTimes(1)
   })
 
-  it('should call CreateTransactionAccountRepo when LoadTransactionAccout returns null', async () => {
+  it('should call SaveTransactionAccountRepo when LoadTransactionAccout returns null', async () => {
     userAccountRepo.load.mockResolvedValueOnce(null)
     await sut.perform(fakeInpuCreateTransactionAccount)
-    expect(userAccountRepo.create).toHaveBeenCalledWith(fakeInpuCreateTransactionAccount)
-    expect(userAccountRepo.create).toHaveBeenCalledTimes(1)
+    expect(userAccountRepo.save).toHaveBeenCalledWith(fakeInpuCreateTransactionAccount)
+    expect(userAccountRepo.save).toHaveBeenCalledTimes(1)
   })
 
   it('should return Internal Server Error if CreateTransactionAccountRepo fails', async () => {
     userAccountRepo.load.mockResolvedValueOnce(null)
-    userAccountRepo.create.mockResolvedValueOnce(new InternalServerError())
+    userAccountRepo.save.mockResolvedValueOnce(new InternalServerError())
 
     const loadTransactionAccount = await sut.perform(fakeInpuCreateTransactionAccount)
     expect(loadTransactionAccount).toEqual(new InternalServerError())
@@ -59,17 +60,14 @@ describe('TransactionAccountService', () => {
 
   it('should call UpdateTransactionAccountRepo when LoadTransactionAccout returns data', async () => {
     userAccountRepo.load.mockResolvedValueOnce({
-      id: 'any_id_cannot_be_changed',
+      id: 'any_valid_id',
       first_name: 'any_firstname_old',
       last_name: 'any_lastname_old',
       vatNumber: 'any_vatNumber_cannot_be_changed'
     })
     await sut.perform(fakeInpuUpdateTransactionAccount)
 
-    expect(userAccountRepo.update).toHaveBeenCalledWith({
-      first_name: fakeInpuUpdateTransactionAccount.first_name,
-      last_name: fakeInpuUpdateTransactionAccount.last_name
-    })
-    expect(userAccountRepo.update).toHaveBeenCalledTimes(1)
+    expect(userAccountRepo.save).toHaveBeenCalledWith(fakeInpuUpdateTransactionAccount)
+    expect(userAccountRepo.save).toHaveBeenCalledTimes(1)
   })
 })
