@@ -68,4 +68,12 @@ describe('TransactionAccountService', () => {
     expect(userAccountRepo.save).toHaveBeenCalledWith(storedTransactionAccount)
     expect(userAccountRepo.save).toHaveBeenCalledTimes(1)
   })
+
+  it('should rethrow if LoadTransactionAccoutRepository throw an error', async () => {
+    userAccountRepo.load.mockRejectedValueOnce(new Error('any_LoadTransactionAccoutRepository_ERROR'))
+
+    const promise = sut.perform(fakeInpuCreateTransactionAccount)
+
+    await expect(promise).rejects.toThrow(new Error('any_LoadTransactionAccoutRepository_ERROR'))
+  })
 })
