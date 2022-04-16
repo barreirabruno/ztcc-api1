@@ -1,6 +1,7 @@
 import { TransactionAccountInterface } from '@/domain/features/'
-import { InternalServerError, ServerError } from '@/domain/models/errors'
-import { HttpResponse } from '../helpers'
+import { InternalServerError } from '@/domain/models/errors'
+import { RequiredFieldError } from '../errors'
+import { badRequest, HttpResponse, serverError } from '@/application/helpers'
 
 export class TransactionController {
   constructor (
@@ -12,10 +13,7 @@ export class TransactionController {
       if (httpRequest.vatNumber === '' ||
       httpRequest.vatNumber === null ||
       httpRequest.vatNumber === undefined) {
-        return {
-          statusCode: 400,
-          data: new Error('The field vatNumber is required')
-        }
+        return badRequest(new RequiredFieldError('vatNumber'))
       }
       const result = await this.transactionControllerService.perform({
         first_name: httpRequest.first_name,
@@ -24,10 +22,7 @@ export class TransactionController {
       })
       if (result.constructor === InternalServerError ||
         result.constructor === Error) {
-        return {
-          statusCode: 500,
-          data: result
-        }
+        return serverError(result)
       } else {
         return {
           statusCode: 200,
@@ -35,10 +30,7 @@ export class TransactionController {
         }
       }
     } catch (error) {
-      return {
-        statusCode: 500,
-        data: new ServerError(error as Error)
-      }
+      return serverError(error as Error)
     }
   }
 }
