@@ -7,34 +7,50 @@ type HttpResponse = {
   data: any
 }
 
+class ServerError extends Error {
+  constructor (error?: Error) {
+    super('Server failed. Try again soon or contact us.')
+    this.name = 'ServerError'
+    this.stack = error?.stack
+  }
+}
+
 class TransactionController {
   constructor (
     private readonly transactionControllerService: TransactionAccountInterface
   ) {}
 
   async handle (httpRequest: any): Promise<HttpResponse> {
-    if (httpRequest.vatNumber === '' ||
-    httpRequest.vatNumber === null ||
-    httpRequest.vatNumber === undefined) {
-      return {
-        statusCode: 400,
-        data: new Error('The field vatNumber is required')
+    try {
+      if (httpRequest.vatNumber === '' ||
+      httpRequest.vatNumber === null ||
+      httpRequest.vatNumber === undefined) {
+        return {
+          statusCode: 400,
+          data: new Error('The field vatNumber is required')
+        }
       }
-    }
-    const result = await this.transactionControllerService.perform({
-      first_name: httpRequest.first_name,
-      last_name: httpRequest.last_name,
-      vatNumber: httpRequest.vatNumber
-    })
-    if (result.constructor !== InternalServerError) {
-      return {
-        statusCode: 200,
-        data: result
+      const result = await this.transactionControllerService.perform({
+        first_name: httpRequest.first_name,
+        last_name: httpRequest.last_name,
+        vatNumber: httpRequest.vatNumber
+      })
+      if (result.constructor === InternalServerError ||
+        result.constructor === Error) {
+        return {
+          statusCode: 500,
+          data: result
+        }
+      } else {
+        return {
+          statusCode: 200,
+          data: result
+        }
       }
-    } else {
+    } catch (error) {
       return {
         statusCode: 500,
-        data: result
+        data: new ServerError(error as Error)
       }
     }
   }
@@ -126,6 +142,21 @@ describe('TransactionAccountController', () => {
     expect(httpResponse).toEqual({
       statusCode: 500,
       data: new InternalServerError()
+    })
+  })
+
+  it('should return 500 if perform method fail for any reason', async () => {
+    const error = new Error('ANY_INFRA_ERROR')
+    transactionAccountService.perform.mockResolvedValueOnce(error)
+    const httpResponse = await sut.handle({
+      first_name: 'any_user_name',
+      last_name: 'any_last_user_name',
+      vatNumber: 'any_valid_vatNumber'
+    })
+
+    expect(httpResponse).toEqual({
+      statusCode: 500,
+      data: error
     })
   })
 
