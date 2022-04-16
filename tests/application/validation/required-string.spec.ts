@@ -1,14 +1,5 @@
 import { RequiredFieldError } from '@/application/errors'
-
-class RequiredStringValidator {
-  constructor (private readonly value: string,
-    private readonly fieldName: string
-  ) {}
-
-  validate (): Error | undefined {
-    return new RequiredFieldError('any_field')
-  }
-}
+import { RequiredStringValidator } from '@/application/validation'
 
 describe('RequiredStringValidator', () => {
   it('should return RequiredFieldError if value is empty', () => {
@@ -33,5 +24,13 @@ describe('RequiredStringValidator', () => {
     const error = sut.validate()
 
     expect(error).toEqual(new RequiredFieldError('any_field'))
+  })
+
+  it('should return empty if value is not empty, null or undefined', () => {
+    const sut = new RequiredStringValidator('any_valid_tring', 'any_field')
+
+    const error = sut.validate()
+
+    expect(error).toBeUndefined()
   })
 })
