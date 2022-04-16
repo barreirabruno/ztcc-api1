@@ -1,8 +1,11 @@
 import { TransactionAccountInterface } from '@/domain/features/'
 import { InternalServerError, ServerError } from '@/domain/models/errors'
-import { mock, MockProxy } from 'jest-mock-extended'
 import { TransactionController } from '@/application/controllers'
-import { RequiredFieldError } from '@/application/errors'
+import { RequiredStringValidator } from '@/application/validation'
+import { mock, MockProxy } from 'jest-mock-extended'
+import { mocked } from 'jest-mock'
+
+jest.mock('@/application/validation/required-string')
 
 describe('TransactionAccountController', () => {
   let sut: TransactionController
@@ -26,42 +29,23 @@ describe('TransactionAccountController', () => {
     jest.clearAllMocks()
   })
 
-  it('should return 400 if vatNumber is empty', async () => {
+  it('should return 400 if validation fails', async () => {
+    const error = new Error('Validation Error')
+    const requiredStringValidatorSpy = jest.fn().mockImplementationOnce(() => ({
+      validate: jest.fn().mockReturnValueOnce(error)
+    }))
+    mocked(RequiredStringValidator).mockImplementationOnce(requiredStringValidatorSpy)
+
     const httpResponse = await sut.handle({
       first_name: 'any_user_name',
       last_name: 'any_last_user_name',
       vatNumber: ''
     })
 
+    expect(RequiredStringValidator).toHaveBeenCalledWith('', 'vatNumber')
     expect(httpResponse).toEqual({
       statusCode: 400,
-      data: new RequiredFieldError('vatNumber')
-    })
-  })
-
-  it('should return 400 if vatNumber is null', async () => {
-    const httpResponse = await sut.handle({
-      first_name: 'any_user_name',
-      last_name: 'any_last_user_name',
-      vatNumber: null as any
-    })
-
-    expect(httpResponse).toEqual({
-      statusCode: 400,
-      data: new RequiredFieldError('vatNumber')
-    })
-  })
-
-  it('should return 400 if vatNumber is undefined', async () => {
-    const httpResponse = await sut.handle({
-      first_name: 'any_user_name',
-      last_name: 'any_last_user_name',
-      vatNumber: undefined as any
-    })
-
-    expect(httpResponse).toEqual({
-      statusCode: 400,
-      data: new RequiredFieldError('vatNumber')
+      data: error
     })
   })
 
