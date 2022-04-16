@@ -29,7 +29,8 @@ describe('TransactionAccountController', () => {
   it('should return 400 if vatNumber is empty', async () => {
     const httpResponse = await sut.handle({
       first_name: 'any_user_name',
-      last_name: 'any_last_user_name'
+      last_name: 'any_last_user_name',
+      vatNumber: ''
     })
 
     expect(httpResponse).toEqual({
@@ -42,7 +43,7 @@ describe('TransactionAccountController', () => {
     const httpResponse = await sut.handle({
       first_name: 'any_user_name',
       last_name: 'any_last_user_name',
-      vatNumber: null
+      vatNumber: null as any
     })
 
     expect(httpResponse).toEqual({
@@ -55,7 +56,7 @@ describe('TransactionAccountController', () => {
     const httpResponse = await sut.handle({
       first_name: 'any_user_name',
       last_name: 'any_last_user_name',
-      vatNumber: undefined
+      vatNumber: undefined as any
     })
 
     expect(httpResponse).toEqual({
