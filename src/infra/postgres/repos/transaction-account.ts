@@ -17,13 +17,20 @@ export class PgTransactionAccountRepository implements LoadTransactionAccoutRepo
     }
   }
 
-  async save (params: SaveTransactionAccoutRepository.Input): Promise<void> {
+  async save (params: SaveTransactionAccoutRepository.Input): Promise<SaveTransactionAccoutRepository.Output> {
+    let saveTransactionAccount
     if (params.id === undefined) {
-      await this.pgTransactionAccountRepo.save({
+      const transactionAccount = await this.pgTransactionAccountRepo.save({
         first_name: params.first_name,
         last_name: params.last_name,
         vatNumber: params.vatNumber
       })
+      saveTransactionAccount = {
+        id: transactionAccount.id.toString(),
+        first_name: transactionAccount.first_name,
+        last_name: transactionAccount.last_name,
+        vatNumber: transactionAccount.vatNumber
+      }
     } else {
       await this.pgTransactionAccountRepo.update({
         id: parseInt(params.id)
@@ -31,6 +38,14 @@ export class PgTransactionAccountRepository implements LoadTransactionAccoutRepo
         first_name: params.first_name,
         last_name: params.last_name
       })
+      const findUpdatedAccount = await this.pgTransactionAccountRepo.findOne({ id: parseInt(params.id) })
+      saveTransactionAccount = {
+        id: findUpdatedAccount?.id.toString() ?? '',
+        first_name: findUpdatedAccount?.first_name ?? '',
+        last_name: findUpdatedAccount?.last_name ?? '',
+        vatNumber: findUpdatedAccount?.vatNumber ?? ''
+      }
     }
+    return saveTransactionAccount
   }
 }
