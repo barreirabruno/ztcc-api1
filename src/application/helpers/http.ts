@@ -1,3 +1,5 @@
+import { ServerError } from '@/domain/models/errors'
+
 export type HttpResponse = {
   statusCode: number
   data: any
@@ -10,5 +12,5 @@ export const badRequest = (error: Error): HttpResponse => ({
 
 export const serverError = (error: Error): HttpResponse => ({
   statusCode: 500,
-  data: error
+  data: new ServerError(error)
 })
