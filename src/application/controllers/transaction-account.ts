@@ -1,7 +1,7 @@
 import { TransactionAccountInterface } from '@/domain/features/'
 import { InternalServerError } from '@/domain/models/errors'
 import { badRequest, HttpResponse, ok, serverError } from '@/application/helpers'
-import { RequiredStringValidator } from '../validation'
+import { RequiredStringValidator, ValidationComposite } from '../validation'
 
 type HttpRequest = {
   first_name?: string
@@ -44,7 +44,7 @@ export class TransactionController {
   }
 
   private validate (httpRequest: HttpRequest): Error | undefined {
-    const validator = new RequiredStringValidator(httpRequest.vatNumber, 'vatNumber')
-    return validator.validate()
+    const validators = [new RequiredStringValidator(httpRequest.vatNumber, 'vatNumber')]
+    return new ValidationComposite(validators).validate()
   }
 }
