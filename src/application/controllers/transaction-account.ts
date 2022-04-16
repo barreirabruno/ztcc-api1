@@ -1,7 +1,8 @@
 import { TransactionAccountInterface } from '@/domain/features/'
 import { InternalServerError } from '@/domain/models/errors'
-import { badRequest, HttpResponse, ok, serverError } from '@/application/helpers'
-import { ValidationBuilder, ValidationComposite } from '../validation'
+import { HttpResponse, ok, serverError } from '@/application/helpers'
+import { ValidationBuilder, Validator } from '@/application/validation'
+import { Controller } from '@/application/controllers'
 
 type HttpRequest = {
   first_name?: string
@@ -16,35 +17,30 @@ type Model = Error | {
   vatNumber: string
 }
 
-export class TransactionController {
+export class TransactionController extends Controller {
   constructor (
     private readonly transactionControllerService: TransactionAccountInterface
-  ) {}
+  ) {
+    super()
+  }
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
-    try {
-      const error = this.validate(httpRequest)
-      if (error !== undefined) {
-        return badRequest(error)
-      }
-      const result = await this.transactionControllerService.perform({
-        first_name: httpRequest?.first_name,
-        last_name: httpRequest?.last_name,
-        vatNumber: httpRequest?.vatNumber
-      })
-      if (result.constructor === InternalServerError ||
-        result.constructor === Error) {
-        return serverError(result)
-      } else {
-        return ok(result)
-      }
-    } catch (error) {
-      return serverError(error as Error)
+  async perform (httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
+    const result = await this.transactionControllerService.perform({
+      first_name: httpRequest?.first_name,
+      last_name: httpRequest?.last_name,
+      vatNumber: httpRequest?.vatNumber
+    })
+    if (result.constructor === InternalServerError ||
+      result.constructor === Error) {
+      return serverError(result)
+    } else {
+      return ok(result)
     }
   }
 
-  private validate (httpRequest: HttpRequest): Error | undefined {
-    const validators = ValidationBuilder.of({ value: httpRequest.vatNumber, fieldName: 'vatNumber' }).required().build()
-    return new ValidationComposite(validators).validate()
+  override buildValidators (httpRequest: HttpRequest): Validator[] {
+    return [
+      ...ValidationBuilder.of({ value: httpRequest.vatNumber, fieldName: 'vatNumber' }).required().build()
+    ]
   }
 }
