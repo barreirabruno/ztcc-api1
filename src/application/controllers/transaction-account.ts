@@ -3,22 +3,34 @@ import { InternalServerError } from '@/domain/models/errors'
 import { RequiredFieldError } from '../errors'
 import { badRequest, HttpResponse, ok, serverError } from '@/application/helpers'
 
+type HttpRequest = {
+  first_name?: string
+  last_name?: string
+  vatNumber: string
+}
+
+type Model = Error | {
+  id?: string
+  first_name?: string
+  last_name?: string
+  vatNumber: string
+}
+
 export class TransactionController {
   constructor (
     private readonly transactionControllerService: TransactionAccountInterface
   ) {}
 
-  async handle (httpRequest: any): Promise<HttpResponse> {
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse<Model>> {
     try {
-      if (httpRequest.vatNumber === '' ||
-      httpRequest.vatNumber === null ||
-      httpRequest.vatNumber === undefined) {
-        return badRequest(new RequiredFieldError('vatNumber'))
+      const error = this.validate(httpRequest)
+      if (error !== undefined) {
+        return badRequest(error)
       }
       const result = await this.transactionControllerService.perform({
-        first_name: httpRequest.first_name,
-        last_name: httpRequest.last_name,
-        vatNumber: httpRequest.vatNumber
+        first_name: httpRequest?.first_name,
+        last_name: httpRequest?.last_name,
+        vatNumber: httpRequest?.vatNumber
       })
       if (result.constructor === InternalServerError ||
         result.constructor === Error) {
@@ -28,6 +40,14 @@ export class TransactionController {
       }
     } catch (error) {
       return serverError(error as Error)
+    }
+  }
+
+  private validate (httpRequest: HttpRequest): Error | undefined {
+    if (httpRequest?.vatNumber === '' ||
+    httpRequest?.vatNumber === null ||
+    httpRequest?.vatNumber === undefined) {
+      return new RequiredFieldError('vatNumber')
     }
   }
 }
