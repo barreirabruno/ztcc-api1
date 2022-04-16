@@ -1,7 +1,7 @@
 import { TransactionAccountInterface } from '@/domain/features/'
 import { InternalServerError } from '@/domain/models/errors'
 import { RequiredFieldError } from '../errors'
-import { badRequest, HttpResponse, serverError } from '@/application/helpers'
+import { badRequest, HttpResponse, ok, serverError } from '@/application/helpers'
 
 export class TransactionController {
   constructor (
@@ -24,10 +24,7 @@ export class TransactionController {
         result.constructor === Error) {
         return serverError(result)
       } else {
-        return {
-          statusCode: 200,
-          data: result
-        }
+        return ok(result)
       }
     } catch (error) {
       return serverError(error as Error)
