@@ -1,7 +1,7 @@
 import { TransactionAccountInterface } from '@/domain/features/'
 import { InternalServerError } from '@/domain/models/errors'
-import { RequiredFieldError } from '../errors'
 import { badRequest, HttpResponse, ok, serverError } from '@/application/helpers'
+import { RequiredStringValidator } from '../validation'
 
 type HttpRequest = {
   first_name?: string
@@ -44,10 +44,7 @@ export class TransactionController {
   }
 
   private validate (httpRequest: HttpRequest): Error | undefined {
-    if (httpRequest?.vatNumber === '' ||
-    httpRequest?.vatNumber === null ||
-    httpRequest?.vatNumber === undefined) {
-      return new RequiredFieldError('vatNumber')
-    }
+    const validator = new RequiredStringValidator(httpRequest.vatNumber, 'vatNumber')
+    return validator.validate()
   }
 }
