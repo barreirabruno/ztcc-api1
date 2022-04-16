@@ -26,9 +26,16 @@ class TransactionController {
       last_name: httpRequest.last_name,
       vatNumber: httpRequest.vatNumber
     })
-    return {
-      statusCode: 500,
-      data: result
+    if (result.constructor !== InternalServerError) {
+      return {
+        statusCode: 200,
+        data: result
+      }
+    } else {
+      return {
+        statusCode: 500,
+        data: result
+      }
     }
   }
 }
@@ -39,6 +46,12 @@ describe('TransactionAccountController', () => {
 
   beforeAll(() => {
     transactionAccountService = mock()
+    transactionAccountService.perform.mockResolvedValue({
+      id: 'any_valid_id',
+      first_name: 'any_user_name',
+      last_name: 'any_last_user_name',
+      vatNumber: 'any_valid_vatNumber'
+    })
   })
 
   beforeEach(() => {
@@ -113,6 +126,24 @@ describe('TransactionAccountController', () => {
     expect(httpResponse).toEqual({
       statusCode: 500,
       data: new InternalServerError()
+    })
+  })
+
+  it('should return 200 if perform method succeeds', async () => {
+    const httpResponse = await sut.handle({
+      first_name: 'any_user_name',
+      last_name: 'any_last_user_name',
+      vatNumber: 'any_valid_vatNumber'
+    })
+
+    expect(httpResponse).toEqual({
+      statusCode: 200,
+      data: {
+        id: 'any_valid_id',
+        first_name: 'any_user_name',
+        last_name: 'any_last_user_name',
+        vatNumber: 'any_valid_vatNumber'
+      }
     })
   })
 })
