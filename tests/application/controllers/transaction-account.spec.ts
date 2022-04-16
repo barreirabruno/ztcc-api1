@@ -2,6 +2,7 @@ import { TransactionAccountInterface } from '@/domain/features/'
 import { InternalServerError } from '@/domain/models/errors'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { TransactionController } from '@/application/controllers'
+import { RequiredFieldError } from '@/application/errors'
 
 describe('TransactionAccountController', () => {
   let sut: TransactionController
@@ -33,7 +34,7 @@ describe('TransactionAccountController', () => {
 
     expect(httpResponse).toEqual({
       statusCode: 400,
-      data: new Error('The field vatNumber is required')
+      data: new RequiredFieldError('vatNumber')
     })
   })
 
@@ -46,7 +47,7 @@ describe('TransactionAccountController', () => {
 
     expect(httpResponse).toEqual({
       statusCode: 400,
-      data: new Error('The field vatNumber is required')
+      data: new RequiredFieldError('vatNumber')
     })
   })
 
@@ -59,7 +60,7 @@ describe('TransactionAccountController', () => {
 
     expect(httpResponse).toEqual({
       statusCode: 400,
-      data: new Error('The field vatNumber is required')
+      data: new RequiredFieldError('vatNumber')
     })
   })
 
