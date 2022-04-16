@@ -1,11 +1,11 @@
 import { TransactionAccountInterface } from '@/domain/features/'
 import { InternalServerError, ServerError } from '@/domain/models/errors'
 import { TransactionController } from '@/application/controllers'
-import { RequiredStringValidator } from '@/application/validation'
+import { RequiredStringValidator, ValidationComposite } from '@/application/validation'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { mocked } from 'jest-mock'
 
-jest.mock('@/application/validation/required-string')
+jest.mock('@/application/validation/composite')
 
 describe('TransactionAccountController', () => {
   let sut: TransactionController
@@ -31,10 +31,10 @@ describe('TransactionAccountController', () => {
 
   it('should return 400 if validation fails', async () => {
     const error = new Error('Validation Error')
-    const requiredStringValidatorSpy = jest.fn().mockImplementationOnce(() => ({
+    const validationCompositeSpy = jest.fn().mockImplementationOnce(() => ({
       validate: jest.fn().mockReturnValueOnce(error)
     }))
-    mocked(RequiredStringValidator).mockImplementationOnce(requiredStringValidatorSpy)
+    mocked(ValidationComposite).mockImplementationOnce(validationCompositeSpy)
 
     const httpResponse = await sut.handle({
       first_name: 'any_user_name',
@@ -42,7 +42,9 @@ describe('TransactionAccountController', () => {
       vatNumber: ''
     })
 
-    expect(RequiredStringValidator).toHaveBeenCalledWith('', 'vatNumber')
+    expect(ValidationComposite).toHaveBeenCalledWith([
+      new RequiredStringValidator('', 'vatNumber')
+    ])
     expect(httpResponse).toEqual({
       statusCode: 400,
       data: error
