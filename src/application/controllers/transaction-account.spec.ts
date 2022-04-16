@@ -1,5 +1,6 @@
 import { TransactionAccountInterface } from '@/domain/features/'
-import { mock } from 'jest-mock-extended'
+import { InternalServerError } from '@/domain/models/errors'
+import { mock, MockProxy } from 'jest-mock-extended'
 
 type HttpResponse = {
   statusCode: number
@@ -12,24 +13,35 @@ class TransactionController {
   ) {}
 
   async handle (httpRequest: any): Promise<HttpResponse> {
-    await this.transactionControllerService.perform({
+    if (httpRequest.vatNumber === '' ||
+    httpRequest.vatNumber === null ||
+    httpRequest.vatNumber === undefined) {
+      return {
+        statusCode: 400,
+        data: new Error('The field vatNumber is required')
+      }
+    }
+    const result = await this.transactionControllerService.perform({
       first_name: httpRequest.first_name,
       last_name: httpRequest.last_name,
       vatNumber: httpRequest.vatNumber
     })
     return {
-      statusCode: 400,
-      data: new Error('The field vatNumber is required')
+      statusCode: 500,
+      data: result
     }
   }
 }
 
 describe('TransactionAccountController', () => {
   let sut: TransactionController
-  let transactionAccountService: TransactionAccountInterface
+  let transactionAccountService: MockProxy<TransactionAccountInterface>
 
   beforeAll(() => {
-    transactionAccountService = mock<TransactionAccountInterface>()
+    transactionAccountService = mock()
+  })
+
+  beforeEach(() => {
     sut = new TransactionController(transactionAccountService)
   })
 
@@ -88,5 +100,19 @@ describe('TransactionAccountController', () => {
       vatNumber: 'any_valid_vatNumber'
     })
     expect(transactionAccountService.perform).toHaveBeenCalledTimes(1)
+  })
+
+  it('should return 500 if perform method fail', async () => {
+    transactionAccountService.perform.mockResolvedValueOnce(new InternalServerError())
+    const httpResponse = await sut.handle({
+      first_name: 'any_user_name',
+      last_name: 'any_last_user_name',
+      vatNumber: 'any_valid_vatNumber'
+    })
+
+    expect(httpResponse).toEqual({
+      statusCode: 500,
+      data: new InternalServerError()
+    })
   })
 })
