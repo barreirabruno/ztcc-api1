@@ -1,5 +1,5 @@
 import { TransactionAccountInterface } from '@/domain/features/'
-import { InternalServerError } from '@/domain/models/errors'
+import { InternalServerError, ServerError } from '@/domain/models/errors'
 import { mock, MockProxy } from 'jest-mock-extended'
 import { TransactionController } from '@/application/controllers'
 import { RequiredFieldError } from '@/application/errors'
@@ -89,7 +89,7 @@ describe('TransactionAccountController', () => {
 
     expect(httpResponse).toEqual({
       statusCode: 500,
-      data: new InternalServerError()
+      data: new ServerError(new InternalServerError())
     })
   })
 
@@ -104,7 +104,7 @@ describe('TransactionAccountController', () => {
 
     expect(httpResponse).toEqual({
       statusCode: 500,
-      data: error
+      data: new ServerError(new InternalServerError())
     })
   })
 
