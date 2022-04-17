@@ -1,0 +1,10 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432 ,
+  "username": "postgres",
+  "password": "testdocker",
+  "database": "postgres",
+  "logging": true,
+  "entities": ["dist/infra/postgres/entities/index.js" ]
+}
