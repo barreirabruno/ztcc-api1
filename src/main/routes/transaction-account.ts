@@ -1,9 +1,8 @@
+import { adaptExpressRoute } from '@/infra/http'
 import { Router } from 'express'
+import { makeTransactionAccountController } from '../factories'
 
 export default (router: Router): void => {
-  router.post('/ztcc/v1/account', (req, res) => {
-    res.send({
-      data: 'any_data'
-    })
-  })
+  const controller = makeTransactionAccountController()
+  router.post('/ztcc/v1/account', adaptExpressRoute(controller))
 }
