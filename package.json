@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig-build.json",
-    "start": "node dist/application/main/api",
+    "start": "node dist/main",
     "lint": "eslint .",
     "lint:fix": "npm run lint -- --fix",
     "test": "jest --passWithNoTests --no-cache --runInBand",
