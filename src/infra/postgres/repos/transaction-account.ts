@@ -3,10 +3,9 @@ import { getRepository } from 'typeorm'
 import { PgTransactionAccount } from '../entities'
 
 export class PgTransactionAccountRepository implements LoadTransactionAccoutRepository {
-  private readonly pgTransactionAccountRepo = getRepository(PgTransactionAccount)
-
   async load (params: LoadTransactionAccout.Input): Promise<LoadTransactionAccout.Output> {
-    const pgTA = await this.pgTransactionAccountRepo.findOne({ vatNumber: params.vatNumber })
+    const pgTransactionAccountRepo = getRepository(PgTransactionAccount)
+    const pgTA = await pgTransactionAccountRepo.findOne({ vatNumber: params.vatNumber })
     if (pgTA !== undefined) {
       return {
         id: pgTA.id.toString(),
@@ -18,9 +17,10 @@ export class PgTransactionAccountRepository implements LoadTransactionAccoutRepo
   }
 
   async save (params: SaveTransactionAccoutRepository.Input): Promise<SaveTransactionAccoutRepository.Output> {
+    const pgTransactionAccountRepo = getRepository(PgTransactionAccount)
     let saveTransactionAccount
     if (params.id === undefined) {
-      const transactionAccount = await this.pgTransactionAccountRepo.save({
+      const transactionAccount = await pgTransactionAccountRepo.save({
         first_name: params.first_name,
         last_name: params.last_name,
         vatNumber: params.vatNumber
@@ -32,13 +32,13 @@ export class PgTransactionAccountRepository implements LoadTransactionAccoutRepo
         vatNumber: transactionAccount.vatNumber
       }
     } else {
-      await this.pgTransactionAccountRepo.update({
+      await pgTransactionAccountRepo.update({
         id: parseInt(params.id)
       }, {
         first_name: params.first_name,
         last_name: params.last_name
       })
-      const findUpdatedAccount = await this.pgTransactionAccountRepo.findOne({ id: parseInt(params.id) })
+      const findUpdatedAccount = await pgTransactionAccountRepo.findOne({ id: parseInt(params.id) })
       saveTransactionAccount = {
         id: findUpdatedAccount?.id.toString() ?? '',
         first_name: findUpdatedAccount?.first_name ?? '',
