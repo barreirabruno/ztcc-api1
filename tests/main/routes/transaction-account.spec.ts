@@ -29,53 +29,58 @@ describe('Transaction account routes', () => {
         last_name: 'any_last_user_name',
         vatNumber: 'xxxxxxxxxxx'
       }
-      await request(app)
+      const { status, body } = await request(app)
         .post('/ztcc/v1/account')
         .send(params)
-        .expect(200)
-        .expect({ id: '1', ...params })
+
+      expect(status).toBe(200)
+      expect(body).toEqual({ id: '1', ...params })
     })
 
     it('should return 200 with a new Transaction Account only with vatNumber', async () => {
       const params = {
         vatNumber: 'xxxxxxxxxxx'
       }
-      await request(app)
+      const { status, body } = await request(app)
         .post('/ztcc/v1/account')
         .send(params)
-        .expect(200)
-        .expect({ id: '1', first_name: null, last_name: null, vatNumber: 'xxxxxxxxxxx' })
+
+      expect(status).toBe(200)
+      expect(body).toEqual({ id: '1', first_name: null, last_name: null, vatNumber: 'xxxxxxxxxxx' })
     })
 
     it('should return 200 with and update a transaction account firtst_name and last_name', async () => {
       const paramsCreateTA = {
         vatNumber: 'xxxxxxxxxxx'
       }
-      await request(app)
+      const createTARequest = await request(app)
         .post('/ztcc/v1/account')
         .send(paramsCreateTA)
-        .expect(200)
-        .expect({ id: '1', first_name: null, last_name: null, vatNumber: 'xxxxxxxxxxx' })
+
+      expect(createTARequest.status).toBe(200)
+      expect(createTARequest.body).toEqual({ id: '1', first_name: null, last_name: null, vatNumber: 'xxxxxxxxxxx' })
 
       const paramsUpdateTA = {
         first_name: 'any_user_name_[UPDATE]',
         last_name: 'any_last_user_name_[UPDATE]',
         vatNumber: 'xxxxxxxxxxx'
       }
-      await request(app)
+      const updateTARequest = await request(app)
         .post('/ztcc/v1/account')
         .send(paramsUpdateTA)
-        .expect(200)
-        .expect({ id: '1', first_name: 'any_user_name_[UPDATE]', last_name: 'any_last_user_name_[UPDATE]', vatNumber: 'xxxxxxxxxxx' })
+
+      expect(updateTARequest.status).toBe(200)
+      expect(updateTARequest.body).toEqual({ id: '1', first_name: 'any_user_name_[UPDATE]', last_name: 'any_last_user_name_[UPDATE]', vatNumber: 'xxxxxxxxxxx' })
     })
 
     it('should return 400 if no vatNumber is provided', async () => {
       const params = {}
-      await request(app)
+      const { status, body } = await request(app)
         .post('/ztcc/v1/account')
         .send(params)
-        .expect(400)
-        .expect({ error: 'The field vatNumber is required' })
+
+      expect(status).toBe(400)
+      expect(body).toEqual({ error: 'The field vatNumber is required' })
     })
   })
 })
