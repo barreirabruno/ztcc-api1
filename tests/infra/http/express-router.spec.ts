@@ -7,8 +7,16 @@ class ExpressRouter {
   constructor (private readonly controller: Controller) {}
 
   async adapt (request: Request, response: Response): Promise<void> {
-    await this.controller.handle(request.body)
+    const httpResponse = await this.controller.handle({ ...request.body })
+    response.status(200).json(httpResponse.data)
   }
+}
+
+const mockDataResponse = {
+  id: 'any_valid_id',
+  first_name: 'any_firstname',
+  last_name: 'any_lastname',
+  vatNumber: 'any_vatNumber'
 }
 
 describe('ExpressRouter', () => {
@@ -21,6 +29,10 @@ describe('ExpressRouter', () => {
     req = getMockReq({ body: { any: 'any' } })
     res = getMockRes().res
     controller = mock()
+    controller.handle.mockResolvedValue({
+      statusCode: 200,
+      data: mockDataResponse
+    })
     sut = new ExpressRouter(controller)
   })
 
@@ -28,6 +40,7 @@ describe('ExpressRouter', () => {
     await sut.adapt(req, res)
 
     expect(controller.handle).toHaveBeenCalledWith({ any: 'any' })
+    expect(controller.handle).toHaveBeenCalledTimes(1)
   })
 
   it('should call handle with empty request', async () => {
@@ -36,5 +49,15 @@ describe('ExpressRouter', () => {
     await sut.adapt(req, res)
 
     expect(controller.handle).toHaveBeenCalledWith({})
+    expect(controller.handle).toHaveBeenCalledTimes(1)
+  })
+
+  it('should respond with 200 and valid data', async () => {
+    await sut.adapt(req, res)
+
+    expect(res.status).toHaveBeenCalledWith(200)
+    expect(res.status).toHaveBeenCalledTimes(1)
+    expect(res.json).toHaveBeenCalledWith(mockDataResponse)
+    expect(res.json).toHaveBeenCalledTimes(1)
   })
 })
