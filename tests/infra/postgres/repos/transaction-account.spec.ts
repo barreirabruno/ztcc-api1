@@ -32,7 +32,8 @@ describe('PgTransactionAccountRepository', () => {
 
       expect(transactionAccountA).toEqual({
         id: '1',
-        vatNumber: 'xxxxxxxxxxx'
+        vatNumber: 'xxxxxxxxxxx',
+        active: '1'
       })
     })
 
@@ -75,7 +76,8 @@ describe('PgTransactionAccountRepository', () => {
         id: 1,
         first_name: 'any_first_name_test_UPDATED',
         last_name: 'any_last_name_test_UPDATED',
-        vatNumber: '00000000002'
+        vatNumber: '00000000002',
+        active: '1'
       })
     })
   })

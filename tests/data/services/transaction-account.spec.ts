@@ -20,7 +20,8 @@ describe('TransactionAccountService', () => {
     id: 'any_database_id',
     first_name: 'any_firstname',
     last_name: 'any_lastname',
-    vatNumber: 'any_database_vatNumber'
+    vatNumber: 'any_database_vatNumber',
+    active: 1
   }
 
   beforeAll(() => {
@@ -29,7 +30,8 @@ describe('TransactionAccountService', () => {
       id: 'any_database_id',
       first_name: 'any_firstname',
       last_name: 'any_lastname',
-      vatNumber: 'any_database_vatNumber'
+      vatNumber: 'any_database_vatNumber',
+      active: 1
     })
   })
 

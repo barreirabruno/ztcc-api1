@@ -11,7 +11,8 @@ export class PgTransactionAccountRepository implements LoadTransactionAccoutRepo
         id: pgTA.id.toString(),
         first_name: pgTA.first_name ?? undefined,
         last_name: pgTA.last_name ?? undefined,
-        vatNumber: pgTA.vatNumber
+        vatNumber: pgTA.vatNumber,
+        active: pgTA.active
       }
     }
   }
@@ -29,7 +30,8 @@ export class PgTransactionAccountRepository implements LoadTransactionAccoutRepo
         id: transactionAccount.id.toString(),
         first_name: transactionAccount.first_name,
         last_name: transactionAccount.last_name,
-        vatNumber: transactionAccount.vatNumber
+        vatNumber: transactionAccount.vatNumber,
+        active: 1
       }
     } else {
       await pgTransactionAccountRepo.update({
@@ -43,7 +45,8 @@ export class PgTransactionAccountRepository implements LoadTransactionAccoutRepo
         id: findUpdatedAccount?.id.toString() ?? '',
         first_name: findUpdatedAccount?.first_name ?? '',
         last_name: findUpdatedAccount?.last_name ?? '',
-        vatNumber: findUpdatedAccount?.vatNumber ?? ''
+        vatNumber: findUpdatedAccount?.vatNumber ?? '',
+        active: 1
       }
     }
     return saveTransactionAccount

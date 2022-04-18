@@ -13,6 +13,7 @@ export namespace LoadTransactionAccout {
     first_name?: string
     last_name?: string
     vatNumber: string
+    active: number
   }
 }
 
@@ -32,5 +33,6 @@ export namespace SaveTransactionAccoutRepository {
     first_name: string
     last_name: string
     vatNumber: string
+    active: number
   } | InternalServerError
 }

@@ -4,14 +4,16 @@ const inputData = {
   id: 'any_input_valid_id',
   first_name: 'any_input_firstname',
   last_name: 'any_input_lastname',
-  vatNumber: 'any_input_vatNumber'
+  vatNumber: 'any_input_vatNumber',
+  active: 1
 }
 
 const loadData = {
   id: 'any_load_valid_id',
   first_name: 'any_load_firstname',
   last_name: 'any_load_lastname',
-  vatNumber: 'any_load_vatNumber'
+  vatNumber: 'any_load_vatNumber',
+  active: 1
 }
 
 describe('TransactionAccountModel', () => {
@@ -22,18 +24,8 @@ describe('TransactionAccountModel', () => {
       id: 'any_input_valid_id',
       first_name: 'any_input_firstname',
       last_name: 'any_input_lastname',
-      vatNumber: 'any_input_vatNumber'
-    })
-  })
-
-  it('should create a transaction Account with input data only', () => {
-    const sut = new TransactionAccountModel(inputData, loadData)
-
-    expect(sut).toEqual({
-      id: 'any_load_valid_id',
-      first_name: 'any_input_firstname',
-      last_name: 'any_input_lastname',
-      vatNumber: 'any_load_vatNumber'
+      vatNumber: 'any_input_vatNumber',
+      active: 1
     })
   })
 
@@ -47,7 +39,8 @@ describe('TransactionAccountModel', () => {
       id: 'any_load_valid_id',
       first_name: 'any_input_firstname',
       last_name: 'any_load_lastname',
-      vatNumber: 'any_load_vatNumber'
+      vatNumber: 'any_load_vatNumber',
+      active: 1
     })
   })
 })

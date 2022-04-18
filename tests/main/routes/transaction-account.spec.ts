@@ -29,36 +29,63 @@ describe('Transaction account routes', () => {
         last_name: 'any_last_user_name',
         vatNumber: 'xxxxxxxxxxx'
       }
+      const expectedTransactionAccount = {
+        id: '1',
+        ...params,
+        active: 1
+      }
       const { status, body } = await request(app)
         .post('/ztcc/v1/account')
         .send(params)
 
       expect(status).toBe(200)
-      expect(body).toEqual({ id: '1', ...params })
+      expect(body).toEqual(expectedTransactionAccount)
     })
 
     it('should return 200 with a new Transaction Account only with vatNumber', async () => {
       const params = {
         vatNumber: 'xxxxxxxxxxx'
       }
+      const expectedTransactionAccount = {
+        id: '1',
+        first_name: null,
+        last_name: null,
+        vatNumber: 'xxxxxxxxxxx',
+        active: 1
+      }
       const { status, body } = await request(app)
         .post('/ztcc/v1/account')
         .send(params)
 
       expect(status).toBe(200)
-      expect(body).toEqual({ id: '1', first_name: null, last_name: null, vatNumber: 'xxxxxxxxxxx' })
+      expect(body).toEqual(expectedTransactionAccount)
     })
 
     it('should return 200 with and update a transaction account firtst_name and last_name', async () => {
       const paramsCreateTA = {
         vatNumber: 'xxxxxxxxxxx'
       }
+      const expectedTransactionAccount = {
+        id: '1',
+        first_name: null,
+        last_name: null,
+        vatNumber: 'xxxxxxxxxxx',
+        active: 1
+      }
       const createTARequest = await request(app)
         .post('/ztcc/v1/account')
         .send(paramsCreateTA)
 
       expect(createTARequest.status).toBe(200)
-      expect(createTARequest.body).toEqual({ id: '1', first_name: null, last_name: null, vatNumber: 'xxxxxxxxxxx' })
+      expect(createTARequest.body).toEqual(expectedTransactionAccount)
+
+      const expectedTransactionAccountUpdate = {
+        id: '1',
+        first_name: 'any_user_name_[UPDATE]',
+        last_name: 'any_last_user_name_[UPDATE]',
+        vatNumber: 'xxxxxxxxxxx',
+        active: 1
+      }
 
       const paramsUpdateTA = {
         first_name: 'any_user_name_[UPDATE]',
@@ -70,7 +97,7 @@ describe('Transaction account routes', () => {
         .send(paramsUpdateTA)
 
       expect(updateTARequest.status).toBe(200)
-      expect(updateTARequest.body).toEqual({ id: '1', first_name: 'any_user_name_[UPDATE]', last_name: 'any_last_user_name_[UPDATE]', vatNumber: 'xxxxxxxxxxx' })
+      expect(updateTARequest.body).toEqual(expectedTransactionAccountUpdate)
     })
 
     it('should return 400 if no vatNumber is provided', async () => {

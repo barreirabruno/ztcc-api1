@@ -13,4 +13,7 @@ export class PgTransactionAccount {
 
   @Column()
   vatNumber!: string
+
+  @Column({ nullable: false, default: 1 })
+  active!: number
 }
