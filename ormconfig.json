@@ -1,10 +1,11 @@
 {
   "type": "postgres",
-  "host": "localhost",
+  "host": "postrgres-ztcc",
   "port": 5432 ,
-  "username": "postgres",
-  "password": "testdocker",
+  "username": "root",
+  "password": "docker@123",
   "database": "postgres",
+  "synchronize": true,
   "logging": true,
   "entities": ["dist/infra/postgres/entities/index.js" ]
 }
