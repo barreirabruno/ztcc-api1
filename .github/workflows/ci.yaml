@@ -1,6 +1,7 @@
 name: z-tech-code-challenge-api1
 on:
-  merge:
+  pull_request:
+    types: [closed]
     branches:
       - main
 jobs:
