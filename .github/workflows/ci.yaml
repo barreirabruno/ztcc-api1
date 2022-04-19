@@ -1,0 +1,17 @@
+name: z-tech-code-challenge-api1
+on:
+  merge:
+    branches:
+      - main
+jobs:
+  check-application:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: === INSTALL APP ===
+        run: npm install
+      - name: === TEST COVERAGE ===
+        run: npm run test:coverage
