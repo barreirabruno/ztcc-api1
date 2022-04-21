@@ -3,7 +3,6 @@ type TransactionAccountData = {
   first_name?: string
   last_name?: string
   vatNumber: string
-  active?: number
 }
 
 type LoadTransactionAccountData = {
@@ -27,6 +26,6 @@ export class TransactionAccountModel {
     this.first_name = transactionAccountData.first_name ?? loadTransactionAccount?.first_name
     this.last_name = transactionAccountData.last_name ?? loadTransactionAccount?.last_name
     this.vatNumber = loadTransactionAccount?.vatNumber ?? transactionAccountData.vatNumber
-    this.active = transactionAccountData?.active ?? loadTransactionAccount?.active
+    this.active = loadTransactionAccount?.active ?? 1
   }
 }

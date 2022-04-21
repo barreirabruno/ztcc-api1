@@ -11,6 +11,7 @@ export namespace TransactionAccount {
     first_name?: string
     last_name?: string
     vatNumber: string
+    active?: number
   }
   export type Output = TransactionAccountModel | InternalServerError
 }
