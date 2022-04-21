@@ -7,6 +7,9 @@ module.exports = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  synchronize: true,
-  entities: [ "dist/infra/postgres/entities/index.js"],
+  synchronize: process.env.DB_SYNCHRONIZE,
+  logging: true,
+  migrations: ['dist/infra/postgres/migrations/index.js'],
+  entities: ['dist/infra/postgres/entities/index.js'],
+  migrationsTableName: 'ztcc-migrations-table'
 }
