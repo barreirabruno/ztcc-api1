@@ -1,40 +1,7 @@
 import { LoadTransactionAccoutRepository } from '@/data/contracts/repos'
+import { TransactionAccountStatusService } from '@/data/services/transaction-account-status-service'
+
 import { mock, MockProxy } from 'jest-mock-extended'
-
-interface IsAccountActiveInterface {
-  perform: (params: IsAccountActive.Input) => Promise<IsAccountActive.Output>
-}
-
-export namespace IsAccountActive {
-  export enum TransactionAccountStatusEnum {
-    AVAILABLE = 'available',
-    UNAVAILABLE = 'unavailable'
-  }
-
-  export type Input = {
-    vatNumber: string
-  }
-  export type Output = {
-    status: TransactionAccountStatusEnum
-  }
-}
-
-class IsAccountActiveService implements IsAccountActiveInterface {
-  constructor (private readonly transactionAccountRepo: LoadTransactionAccoutRepository) {}
-
-  async perform (params: IsAccountActive.Input): Promise<IsAccountActive.Output> {
-    const searchTransactionAccount = await this.transactionAccountRepo.load({ vatNumber: params.vatNumber })
-    if (searchTransactionAccount?.active === 1) {
-      return {
-        status: IsAccountActive.TransactionAccountStatusEnum.AVAILABLE
-      }
-    } else {
-      return {
-        status: IsAccountActive.TransactionAccountStatusEnum.UNAVAILABLE
-      }
-    }
-  }
-}
 
 describe('IsAccountActiveService', () => {
   const mockTARepositoryData = {
@@ -44,11 +11,11 @@ describe('IsAccountActiveService', () => {
     vatNumber: 'any_database_vatNumber'
   }
   let transactionAccountRepo: MockProxy<LoadTransactionAccoutRepository>
-  let sut: IsAccountActiveService
+  let sut: TransactionAccountStatusService
 
   beforeAll(() => {
     transactionAccountRepo = mock()
-    sut = new IsAccountActiveService(transactionAccountRepo)
+    sut = new TransactionAccountStatusService(transactionAccountRepo)
   })
 
   it('should return available if active is equal to 1', async () => {
