@@ -50,9 +50,18 @@ describe('TransactionAccountStatus', () => {
   })
 
   it('should build validators correctly', () => {})
-  it('should call TransactionAccountStatusService with correct params', () => {})
+  it('should call TransactionAccountStatusService with correct params', async () => {
+    await sut.handle({
+      vatNumber: 'any_vatNumber'
+    })
+
+    expect(transactionAccountStatusService.perform).toHaveBeenCalledWith({ vatNumber: 'any_vatNumber' })
+    expect(transactionAccountStatusService.perform).toHaveBeenCalledTimes(1)
+  })
   it('should return 200 if perform method succeeds', async () => {
-    const transactionAccountStatusService = await sut.handle({})
+    const transactionAccountStatusService = await sut.handle({
+      vatNumber: 'any_vatNumber'
+    })
     expect(transactionAccountStatusService).toEqual({
       statusCode: 200,
       data: {
