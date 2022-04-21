@@ -62,6 +62,7 @@ describe('IsAccountActiveService', () => {
       status: 'available'
     })
   })
+
   it('should return unavailable if active is not 1', async () => {
     transactionAccountRepo.load.mockResolvedValueOnce({
       ...mockTARepositoryData,
@@ -73,5 +74,12 @@ describe('IsAccountActiveService', () => {
       status: 'unavailable'
     })
   })
-  it('should return unavailable if transaction account is not found', () => {})
+
+  it('should rethrow if transactionAccountRepository throw', async () => {
+    transactionAccountRepo.load.mockRejectedValueOnce(new Error('any_LoadTransactionAccoutRepository_ERROR'))
+
+    const transactionAccountStatus = sut.perform({ vatNumber: 'any_vatnumber' })
+
+    await expect(transactionAccountStatus).rejects.toThrow(new Error('any_LoadTransactionAccoutRepository_ERROR'))
+  })
 })
