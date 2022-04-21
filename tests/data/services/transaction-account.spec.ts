@@ -52,7 +52,7 @@ describe('TransactionAccountService', () => {
   it('should call SaveTransactionAccountRepo when LoadTransactionAccout returns null', async () => {
     userAccountRepo.load.mockResolvedValueOnce(null)
     await sut.perform(fakeInpuCreateTransactionAccount)
-    expect(userAccountRepo.save).toHaveBeenCalledWith(fakeInpuCreateTransactionAccount)
+    expect(userAccountRepo.save).toHaveBeenCalledWith({ ...fakeInpuCreateTransactionAccount, active: 1 })
     expect(userAccountRepo.save).toHaveBeenCalledTimes(1)
   })
 
