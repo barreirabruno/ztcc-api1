@@ -28,4 +28,12 @@ describe('MaxLengthStringValidator', () => {
 
     expect(error).toEqual(new TooLongStringError('vatNumber'))
   })
+
+  it('should return empty if string is not too short', () => {
+    const sut = new MaxLengthStringValidator('00000000000', 'vatNumber')
+
+    const error = sut.validate()
+
+    expect(error).toEqual(undefined)
+  })
 })
