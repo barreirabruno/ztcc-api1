@@ -8,7 +8,8 @@ module.exports = {
   collectCoverageFrom: [
     '<rootDir>/src/**/*.ts',
     '!<rootDir>/src/main/**',
-    '!<rootDir>/src/**/index.ts'],
+    '!<rootDir>/src/**/index.ts',
+    '!<rootDir>/src/infra/postgres/migrations/**.ts'],
   coverageDirectory: 'coverage',
   coverageProvider: 'babel',
   moduleNameMapper: {
