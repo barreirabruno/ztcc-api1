@@ -4,7 +4,7 @@ import { Controller } from '@/application/controllers'
 import { HttpResponse, ok, serverError } from '@/application/helpers'
 import { InternalServerError } from '@/domain/models/errors'
 import { mock, MockProxy } from 'jest-mock-extended'
-import { RequiredStringValidator, ValidationBuilder, Validator } from '@/application/validation'
+import { RequiredStringValidator, ValidationBuilder, Validator, NumerableStringValidator, MinLengthStringValidator, MaxLengthStringValidator } from '@/application/validation'
 
 type HttpRequest = {
   vatNumber: string
@@ -35,7 +35,12 @@ export class TransactionAccountStatusController extends Controller {
 
   override buildValidators (httpRequest: any): Validator[] {
     return [
-      ...ValidationBuilder.of({ value: httpRequest.vatNumber, fieldName: 'vatNumber' }).required().build()
+      ...ValidationBuilder.of({ value: httpRequest.vatNumber, fieldName: 'vatNumber' })
+        .required()
+        .numerable()
+        .vatNumberMinLength()
+        .vatNumberMaxLength()
+        .build()
     ]
   }
 }
@@ -62,22 +67,25 @@ describe('TransactionAccountStatus', () => {
     })
 
     expect(validators).toEqual([
-      new RequiredStringValidator('', 'vatNumber')
+      new RequiredStringValidator('', 'vatNumber'),
+      new NumerableStringValidator('', 'vatNumber'),
+      new MinLengthStringValidator('', 'vatNumber'),
+      new MaxLengthStringValidator('', 'vatNumber')
     ])
   })
 
   it('should call TransactionAccountStatusService with correct params', async () => {
     await sut.handle({
-      vatNumber: 'any_vatNumber'
+      vatNumber: '00000000000'
     })
 
-    expect(transactionAccountStatusService.perform).toHaveBeenCalledWith({ vatNumber: 'any_vatNumber' })
+    expect(transactionAccountStatusService.perform).toHaveBeenCalledWith({ vatNumber: '00000000000' })
     expect(transactionAccountStatusService.perform).toHaveBeenCalledTimes(1)
   })
 
   it('should return 200 if perform method succeeds', async () => {
     const transactionAccountStatusService = await sut.handle({
-      vatNumber: 'any_vatNumber'
+      vatNumber: '00000000000'
     })
     expect(transactionAccountStatusService).toEqual({
       statusCode: 200,
