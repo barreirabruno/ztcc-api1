@@ -1,4 +1,4 @@
-import { RequiredStringValidator, Validator } from '@/application/validation'
+import { NumerableStringValidator, MinLengthStringValidator, MaxLengthStringValidator, RequiredStringValidator, Validator } from '@/application/validation'
 
 export class ValidationBuilder {
   private constructor (
@@ -13,6 +13,21 @@ export class ValidationBuilder {
 
   required (): ValidationBuilder {
     this.validators.push(new RequiredStringValidator(this.value, this.fieldName))
+    return this
+  }
+
+  numerable (): ValidationBuilder {
+    this.validators.push(new NumerableStringValidator(this.value, this.fieldName))
+    return this
+  }
+
+  vatNumberMinLength (): ValidationBuilder {
+    this.validators.push(new MinLengthStringValidator(this.value, this.fieldName))
+    return this
+  }
+
+  vatNumberMaxLength (): ValidationBuilder {
+    this.validators.push(new MaxLengthStringValidator(this.value, this.fieldName))
     return this
   }
 
