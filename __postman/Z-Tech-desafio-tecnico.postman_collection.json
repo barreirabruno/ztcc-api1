@@ -1,0 +1,105 @@
+{
+	"info": {
+		"_postman_id": "3f680ec6-bcf6-4305-b090-52541b57e90f",
+		"name": "Z-Tech-desafio-tecnico",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "account",
+			"item": [
+				{
+					"name": "create-transaction-account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first_name\": \"Josefa Nina Allana\",\n    \"last_name\": \"Figueiredo\",\n    \"vatNumber\": \"35719033157\" \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{heroku-api1-url}}/ztcc/v1/account",
+							"host": [
+								"{{heroku-api1-url}}"
+							],
+							"path": [
+								"ztcc",
+								"v1",
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "status-transaction-account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vatNumber\": \"35719033157\" \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{heroku-api1-url}}/ztcc/v1/account/status",
+							"host": [
+								"{{heroku-api1-url}}"
+							],
+							"path": [
+								"ztcc",
+								"v1",
+								"account",
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "transactions",
+			"item": [
+				{
+					"name": "deposit-account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vatNumber\": \"35719033157\",\n    \"currency\": \"BRL\",\n    \"value\": -2000\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{heroku-api2-url}}/ztcc/v1/account/deposit",
+							"host": [
+								"{{heroku-api2-url}}"
+							],
+							"path": [
+								"ztcc",
+								"v1",
+								"account",
+								"deposit"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
