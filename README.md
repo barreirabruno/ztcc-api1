@@ -15,6 +15,10 @@ This service is built with:
     - Mysql
 
 ## Run Test Suite
+Install dependencies
+```
+npm install
+```
 Run all tests with:
 ```
 npm run test
@@ -33,24 +37,19 @@ npm run test:cov
 ```
 
 ## Run the project - with Docker
+
+1. Rename **.env-example** file to **.env**, this file will be used by docker-compose
+
+2. Run the app from docker-compose file
 ```
 docker compose up
 ```
 
-## Run the project - no Docker
-```
-npm install
-```
-Then run the app
-```
-npm run start:local
-```
-
 ## Features available
+    - [x] Create a holder account
+    - [x] Check an account status
 
 ## Features Roadmap
-    - [] Create a holder account
-    - [] Check an account status
     - [] Change an account status
     - [] Update an account infos such as first name and last name
 
