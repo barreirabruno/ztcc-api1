@@ -8,11 +8,13 @@ Service responsible to create bank accounts. The service perform tasks such as c
 
 ## Tech stack
 This service is built with:
-    - Typescript
-    - NodeJS
-    - Jest
-    - TypeORM
-    - Mysql
+- Typescript
+- NodeJS
+- Jest
+- TypeORM
+- Postgres
+- Docker
+- Heroku
 
 ## Run Test Suite
 Install dependencies
