@@ -1,6 +1,6 @@
-# ztcc-api1 - microsservice-account
+# ztcc-api1
 
-## Project
+## Project - microsservice-account
 Z-Tech code challenge, api1.
 
 ## Description:
