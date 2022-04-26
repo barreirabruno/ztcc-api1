@@ -32,7 +32,8 @@
 								"v1",
 								"account"
 							]
-						}
+						},
+						"description": "## Description\n\nCreate a new transaction account.  \nTransaction accounts are capable to perform bank services such as deposit and transfer to other active transaction accounts.\n\n## Params\n\n*   **first_name** - First name of the account holder\n*   **last_name (optional) -** Last name of the account holder\n*   **vatNumber** -"
 					},
 					"response": []
 				},
@@ -61,7 +62,8 @@
 								"account",
 								"status"
 							]
-						}
+						},
+						"description": "## Description\n\nCheck the status of a transaction account.  \nThis service is dependency of bank-services api, it ensures that only active accounts can be participants of service transactions.\n\n## Params\n\n*   **vatNumber** - account holder vatNumber"
 					},
 					"response": []
 				}
@@ -77,7 +79,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"vatNumber\": \"35719033157\",\n    \"currency\": \"BRL\",\n    \"value\": -2000\n}",
+							"raw": "{\n    \"vatNumberSource\": \"35719033157\",\n    \"currency\": \"BRL\",\n    \"value\": 30.34\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -85,7 +87,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{heroku-api2-url}}/ztcc/v1/account/deposit",
+							"raw": "{{heroku-api2-url}}/ztcc/v1/account/services",
 							"host": [
 								"{{heroku-api2-url}}"
 							],
@@ -93,9 +95,40 @@
 								"ztcc",
 								"v1",
 								"account",
-								"deposit"
+								"services"
 							]
-						}
+						},
+						"description": "## Description\n\nDeposit a value to a transaction account.  \nDestination account will be same as source(`vatNumberSource`) account.\n\n## Params\n\n*   **vatNumberSource** - account holder vatNumber that will receive the deposit.\n*   **currency** - deposit currency\n*   **value** - deposit amount"
+					},
+					"response": []
+				},
+				{
+					"name": "transfer-account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"vatNumberSource\": \"35719033157\",\n    \"vatNumberDestination\": \"14743980810\",\n    \"currency\": \"BRL\",\n    \"value\": 200.69\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{heroku-api2-url}}/ztcc/v1/account/services",
+							"host": [
+								"{{heroku-api2-url}}"
+							],
+							"path": [
+								"ztcc",
+								"v1",
+								"account",
+								"services"
+							]
+						},
+						"description": "## Description\n\nTransfer a value between two different active accounts.  \nThis method will execute the transfer only if both transaction accounts are active.\n\n## Params\n\n*   **vatNumberSource** - account holder vatNumber that will send the value to another transaction account.\n*   **vatNumberDestination -** account holder vatNumber that will receive the transfer from another transaction account.\n*   **currency** - deposit currency\n*   **value** - deposit amount"
 					},
 					"response": []
 				}
