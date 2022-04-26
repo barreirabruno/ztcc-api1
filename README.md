@@ -13,11 +13,12 @@ This service is built with:
 - Jest
 - TypeORM
 - Postgres
+- Husky
 - Docker
 - Heroku
 
 ## Run Test Suite
-Install dependencies
+Install dependencies:
 ```
 npm install
 ```
