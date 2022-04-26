@@ -58,7 +58,7 @@ docker compose up
 
 ## Architecture of this service
 
-## AS IS
+## AS IS - DIAGRAM TEAR DOWN COMING SOON
 ![z-tech-code-challenge drawio](https://user-images.githubusercontent.com/16967470/165403263-6c38271c-59c5-4d24-8250-6682708819dd.png)
 
-## TO BE
+## TO BE - DIAGRAM AND DIAGRAM TEAR DOWN COMING SOON
